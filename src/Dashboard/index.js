@@ -1,4 +1,4 @@
-import './App.css';
+import '../App.css';
 import { Layout, Avatar, Menu, Breadcrumb } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import { UserOutlined } from '@ant-design/icons';
@@ -10,7 +10,7 @@ const { Header, Footer, Sider, Content } = Layout;
 
 
 
-function App() {
+function Dashboard() {
   return (
     <div className="App">
       <Layout>
@@ -61,4 +61,4 @@ function App() {
   );
 }
 
-export default App;
+export default Dashboard;
