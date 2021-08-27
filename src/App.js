@@ -1,63 +1,28 @@
+import { Switch, Route } from 'react-router-dom';
+import Sirius from '@edgarjeremy/sirius.adapter'
+import { useConnectServer } from './hooks/useConnectServer'
+import 'antd/dist/antd.dark.css'
 import './App.css';
-import { Layout, Avatar, Menu, Breadcrumb } from 'antd';
-import Title from 'antd/lib/typography/Title';
-import { UserOutlined } from '@ant-design/icons';
-import SubMenu from 'antd/lib/menu/SubMenu';
-import {
-  MailOutlined,
-} from '@ant-design/icons';
-const { Header, Footer, Sider, Content } = Layout;
+import Login from './pages/Login';
+import Dashboard from 'pages/Dashboard';
 
+const { REACT_APP_IP_ADDRESS, REACT_APP_PORT } = process.env;
+const Adapter = new Sirius(REACT_APP_IP_ADDRESS, REACT_APP_PORT, localStorage);
 
+const App = () => {
+  const { ready, error } = useConnectServer(Adapter);
 
-function App() {
   return (
-    <div className="App">
-      <Layout>
-        <Header style={{ padding: '10' }}>
-          <Avatar style={{ float: 'right' }} icon={<UserOutlined />} />
-          <Title style={{ color: 'white' }} level={3}>DPKS</Title>
-        </Header>
-        <Layout>
-          <Sider>
-            <Menu
-              defaultSelectedKeys={['Dashboard']}
-              mode="inline"
-            >
-              <Menu.Item key='Dashboard'>
-                Dashboard
-              </Menu.Item>
-              <SubMenu key="sub1" icon={<MailOutlined />} title="Menu">
-                <Menu.ItemGroup key='AboutUs' title='Sub Menu'>
-                  <Menu.Item key='Menu1'>
-                    Menu 1
-                  </Menu.Item >
-                  <Menu.Item key='Menu2'>
-                    Menu 2
-                  </Menu.Item>
-                  <Menu.Item key='Menu3'>
-                    Menu 3
-                  </Menu.Item>
-                </Menu.ItemGroup>
-              </SubMenu>
-
-            </Menu>
-          </Sider>
-
-          <Layout>
-            <Content className="site-layout" style={{ padding: '0 50px', }}>
-              <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-              </Breadcrumb>
-              <div className="site-layout-background" style={{ padding: 24, minHeight: 580 }}>
-                Content
-              </div>
-            </Content>
-            <Footer style={{ textAlign: 'center' }}>Ant Design ©2018 Created by Ant UED</Footer>
-          </Layout>
-        </Layout>
-      </Layout>
-    </div>
+    ready ?
+    <Switch>
+      <Route path="/" exact component={Login} />
+      <Route path="/dashboard" component={Dashboard} />
+    </Switch>
+    :
+    error ?
+    <div>error</div>
+    :
+    <div>loading</div>
   );
 }
 
