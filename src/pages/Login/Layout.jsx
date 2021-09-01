@@ -9,7 +9,7 @@ const { Item } = Form;
 
 const Layout = () => {
   const [loading, toggleLoading] = useState(false);
-  const { auth, setAuth, login: loggedIn } = useAuth();
+  const { auth, setLogin, login: loggedIn } = useAuth();
   const { errorCatch } = useErrorCatcher();
   document.title = "Login"
 
@@ -17,7 +17,7 @@ const Layout = () => {
     toggleLoading(true);
     auth.set({ username, password }).then(resp => {
       toggleLoading(false);
-      setAuth(resp);
+      setLogin(resp);
     }).catch(e => {
       toggleLoading(false);
       if ('response' in e) {
@@ -26,7 +26,7 @@ const Layout = () => {
         errorCatch(e);
       }
     })
-  }, [errorCatch, auth, setAuth]);
+  }, [errorCatch, auth, setLogin]);
 
   return (
     loggedIn ?

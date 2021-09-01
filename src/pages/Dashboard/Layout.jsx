@@ -1,17 +1,30 @@
-import { Layout as AntLayout, Avatar, Breadcrumb } from 'antd';
-import Title from 'antd/lib/typography/Title';
-import { UserOutlined, DashboardOutlined } from '@ant-design/icons';
+import { useCallback } from 'react';
+import { Layout as AntLayout, Breadcrumb, PageHeader as Header, Button } from 'antd';
+import { LogoutOutlined, DashboardOutlined } from '@ant-design/icons';
 import Sidebar from './Sidebar';
 import Router from './Router';
-const { Header, Footer, Content } = AntLayout;
+import useAuth from 'hooks/useAuth';
+import useErrorCatcher from 'hooks/useErrorCatcher';
+import { Redirect } from 'react-router';
+const { Footer, Content } = AntLayout;
 
 const Layout = () => {
+  const { auth, setLogout, login } = useAuth();
+  const {errorCatch} = useErrorCatcher();
+
+  const logout = useCallback(() => {
+    auth.remove().then(resp => {
+      console.log(resp);
+      setLogout();
+    }).catch(errorCatch)
+  }, [auth, setLogout, errorCatch]);  
+
   return (
+    !login ?
+    <Redirect to="/" />
+    :
     <AntLayout>
-      <Header style={{ padding: '10' }}>
-        <Avatar style={{ float: 'right' }} icon={<UserOutlined />} />
-        <Title style={{ color: 'white', margin: '18px 24px 16px 0' }} level={4}>DPKS</Title>
-      </Header>
+      <Header title="DKPS" style={{ background: '#1f1f1f' }} extra={<Button onClick={logout} size="small" icon={<LogoutOutlined />} danger type="primary" >Logout</Button>} />
       <AntLayout>
         <Sidebar />
         <AntLayout style={{ overflow: 'auto' }}>
