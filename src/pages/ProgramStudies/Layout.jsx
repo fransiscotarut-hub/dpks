@@ -1,14 +1,14 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { Typography, Table, Space, Tooltip, Button, message, Popconfirm } from 'antd'
 import { DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
-import AddUser from './AddUser'
+import AddStudyProgram from './AddStudyProgram'
 import useModels from 'hooks/useModels';
 import useErrorCatcher from 'hooks/useErrorCatcher';
 
 const Layout = () => {
   const [modal, toggleModal] = useState(false);
-  const [study_programs, setStudy_programs] = useState({ rows: [], count: 0 });
-  const [study_program, setStudy_program] = useState(undefined);
+  const [studtPrograms, setStudyPrograms] = useState({ rows: [], count: 0 });
+  const [studyProgram, setStudyProgram] = useState(undefined);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [loading, toggleLoading] = useState(true);
@@ -17,7 +17,7 @@ const Layout = () => {
 
   document.title = "Dashboard - Program Studi";
 
-  const getStudy_programs = useCallback(() => {
+  const getStudyPrograms = useCallback(() => {
     toggleLoading(true);
     const offset = (page - 1) * limit;
     StudyProgram.collection({
@@ -26,24 +26,24 @@ const Layout = () => {
       offset
     }).then(resp => {
       toggleLoading(false);
-      setStudy_programs(resp);
-    }).catch(errorCatch);
+      setStudyPrograms(resp);
+    }).catch(e => errorCatch(e));
   }, [page, limit, StudyProgram, errorCatch]);
 
   useEffect(() => {
-    getStudy_programs();
-  }, [getStudy_programs]);
+    getStudyPrograms();
+  }, [getStudyPrograms]);
 
-  const deleteStudyProgram = useCallback((study_program) => {
-    study_program.delete().then(resp => {
+  const deleteStudyProgram = useCallback((studyProgram) => {
+    studyProgram.delete().then(resp => {
       message.success(`Program Studi ${resp.name} berhasil dihapus`);
-      getStudy_programs();
+      getStudyPrograms();
     }).catch(errorCatch);
-  }, [errorCatch, getStudy_programs]);
+  }, [errorCatch, getStudyPrograms]);
 
   const columns = useMemo(() => ([
     {
-      title: 'Nama',
+      title: 'Program Studi',
       key: 'name',
       dataIndex: 'name'
     },
@@ -55,7 +55,7 @@ const Layout = () => {
           <Tooltip title={`Edit ${row.name}`}>
             <Button onClick={() => {
               toggleModal(true);
-              setStudy_program(row);
+              setStudyProgram(row);
             }} size="small" icon={<EditOutlined />} />
           </Tooltip>
           <Tooltip title={`Hapus ${row.name}`}>
@@ -77,21 +77,37 @@ const Layout = () => {
   const createStudyProgram = useCallback((val, cb) => {
     StudyProgram.create(val).then(resp => {
       message.success(`Program Studi ${resp.name} berhasil ditambah`);
-      getStudy_programs();
+      getStudyPrograms();
       cb();
       toggleModal(false);
     }).catch(errorCatch);
-  }, [StudyProgram, getStudy_programs, errorCatch]);
+  }, [StudyProgram, getStudyPrograms, errorCatch]);
+
+  const updateStudyProgram = useCallback((val, cb) => {
+    if (typeof studyProgram !== 'undefined') {
+      studyProgram.update(val).then(resp => {
+        message.success(`Program studi ${studyProgram.name} berhasil diubah menjadi ${resp.name}`);
+        getStudyPrograms();
+        cb();
+        toggleModal(false);
+      }).catch(errorCatch);
+    }
+  }, [studyProgram, errorCatch, getStudyPrograms]);
 
   return (
     <div>
       <Typography.Title level={5}>Program Studi</Typography.Title>
-      <AddUser visible={modal} onCancel={() => {
-        toggleModal(false);
-        setStudy_programs(undefined);
-      }} onOpen={() => toggleModal(true)} onSubmit={createStudyProgram} study_program={study_program} />
+      <AddStudyProgram visible={modal}
+        onCancel={() => {
+          toggleModal(false);
+          setStudyProgram(undefined)
+        }}
+        onOpen={() => toggleModal(true)}
+        onSubmit={typeof studyProgram !== 'undefined' ? updateStudyProgram : createStudyProgram}
+        studyProgram={studyProgram}
+      />
       <Table
-        dataSource={study_programs.rows}
+        dataSource={studtPrograms.rows}
         rowKey={item => `${item.id}`}
         columns={columns}
         bordered

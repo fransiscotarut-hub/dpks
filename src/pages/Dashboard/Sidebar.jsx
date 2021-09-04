@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Divider, Layout, Menu, Typography } from "antd"
+import { Divider, Layout, Menu, Tooltip, Typography } from "antd"
 import {
   UserOutlined,
   HomeOutlined,
@@ -17,8 +17,6 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const { push } = useHistory();
 
-  document.title = "Dashboard";
-
   return (
     <Sider onCollapse={toggeCollapse} collapsed={collapse} collapsible>
       {!collapse ?
@@ -28,7 +26,11 @@ const Sidebar = () => {
         </div>
         :
         <div style={{ padding: 24, paddingBottom: 0, overflow: 'hidden' }}>
-          <Avatar />
+          <Tooltip placement="right" title={`${user.name}`}>
+          <Avatar style={{background: '#177ddc'}}>
+            {`${user.username}`.charAt(0).toUpperCase()}
+          </Avatar>
+          </Tooltip>
         </div>
       }
       <Divider />

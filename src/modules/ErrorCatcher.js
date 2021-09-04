@@ -10,6 +10,8 @@ export default function ErrorCatcher(error, { auth, setLogout }) {
     }).catch(e => message.error(e.toString()));
   }
 
+  console.log({ ...error })
+
   if (typeof error.errors !== 'undefined') {
     if (error.response?.status === 401) {
       logout();

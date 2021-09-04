@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Layout as AntLayout, Breadcrumb, PageHeader as Header, Button } from 'antd';
 import { LogoutOutlined, DashboardOutlined } from '@ant-design/icons';
 import Sidebar from './Sidebar';
@@ -11,12 +11,22 @@ const { Footer, Content } = AntLayout;
 const Layout = () => {
   const { auth, setLogout, login } = useAuth();
   const {errorCatch} = useErrorCatcher();
+  const [loading, toggleLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = "Dashboard";
+  }, []);
 
   const logout = useCallback(() => {
+    toggleLoading(true);
     auth.remove().then(resp => {
+      toggleLoading(false);
       console.log(resp);
       setLogout();
-    }).catch(errorCatch)
+    }).catch(e => {
+      toggleLoading(false);
+      errorCatch(e);
+    })
   }, [auth, setLogout, errorCatch]);  
 
   return (
@@ -24,7 +34,7 @@ const Layout = () => {
     <Redirect to="/" />
     :
     <AntLayout>
-      <Header title="DKPS" style={{ background: '#1f1f1f' }} extra={<Button onClick={logout} size="small" icon={<LogoutOutlined />} danger type="primary" >Logout</Button>} />
+      <Header title="DKPS" style={{ background: '#1f1f1f' }} extra={<Button loading={loading} onClick={logout} size="small" icon={<LogoutOutlined />} danger type="primary" >Logout</Button>} />
       <AntLayout>
         <Sidebar />
         <AntLayout style={{ overflow: 'auto' }}>
