@@ -1,65 +1,54 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import { Table, Space, Tooltip, Button, message, Popconfirm, PageHeader } from 'antd'
+import { Typography, Table, Space, Tooltip, Button, message, Popconfirm } from 'antd'
+import { Link, useRouteMatch } from 'react-router-dom';
 import { DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
-import { useParams, useHistory } from 'react-router-dom';
-import AddStudyProgram from './AddStudyProgram'
+import AddDepartment from './AddDepartment'
 import useModels from 'hooks/useModels';
 import useErrorCatcher from 'hooks/useErrorCatcher';
 
 const Layout = () => {
   const [modal, toggleModal] = useState(false);
-  const [studtPrograms, setStudyPrograms] = useState({ rows: [], count: 0 });
-  const [studyProgram, setStudyProgram] = useState(undefined);
+  const [departments, setDepartments] = useState({ rows: [], count: 0 });
   const [department, setDepartment] = useState(undefined);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [loading, toggleLoading] = useState(true);
-  const { id } = useParams();
-  const {push} = useHistory()
-  const { models: { StudyProgram, Department } } = useModels();
+  const {path} = useRouteMatch();
+  const { models: { Department } } = useModels();
   const { errorCatch } = useErrorCatcher();
 
   document.title = "Dashboard - Program Studi";
 
-  const getDepartment = useCallback(() => {
-    Department.single(id).then(resp => {
-      setDepartment(resp);
-    }).catch(errorCatch);
-  }, [Department, errorCatch, id]);
-
-  const getStudyPrograms = useCallback(() => {
+  const getDepartments = useCallback(() => {
     toggleLoading(true);
     const offset = (page - 1) * limit;
-    StudyProgram.collection({
-      attributes: ['name', 'department_id'],
+    Department.collection({
+      attributes: ['name'],
       limit,
-      offset,
-      where: {
-        department_id: id
-      }
+      offset
     }).then(resp => {
       toggleLoading(false);
-      setStudyPrograms(resp);
+      setDepartments(resp);
     }).catch(e => errorCatch(e));
-  }, [page, limit, StudyProgram, errorCatch, id]);
+  }, [page, limit, Department, errorCatch]);
 
   useEffect(() => {
-    getStudyPrograms();
-    getDepartment()
-  }, [getStudyPrograms, getDepartment]);
+    getDepartments();
+  }, [getDepartments]);
 
-  const deleteStudyProgram = useCallback((studyProgram) => {
-    studyProgram.delete().then(resp => {
+  const deleteDepartment = useCallback((department) => {
+    department.delete().then(resp => {
       message.success(`Program Studi ${resp.name} berhasil dihapus`);
-      getStudyPrograms();
+      getDepartments();
     }).catch(errorCatch);
-  }, [errorCatch, getStudyPrograms]);
+  }, [errorCatch, getDepartments]);
 
   const columns = useMemo(() => ([
     {
-      title: 'Program Studi',
+      title: 'Jurusan',
       key: 'name',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      render: (text, row) => (<Link to={`${path}/${row.id}`}>{text}</Link>)
     },
     {
       title: 'Edit | Hapus',
@@ -69,7 +58,7 @@ const Layout = () => {
           <Tooltip title={`Edit ${row.name}`}>
             <Button onClick={() => {
               toggleModal(true);
-              setStudyProgram(row);
+              setDepartment(row);
             }} size="small" icon={<EditOutlined />} />
           </Tooltip>
           <Tooltip title={`Hapus ${row.name}`}>
@@ -78,7 +67,7 @@ const Layout = () => {
               okText="Hapus"
               cancelText="Batal"
               okButtonProps={{ danger: true, type: 'primary' }}
-              onConfirm={() => deleteStudyProgram(row)}
+              onConfirm={() => deleteDepartment(row)}
             >
               <Button size="small" type="primary" danger icon={<DeleteOutlined />} />
             </Popconfirm>
@@ -86,42 +75,42 @@ const Layout = () => {
         </Space>
       )
     }
-  ]), [deleteStudyProgram]);
+  ]), [deleteDepartment, path]);
 
-  const createStudyProgram = useCallback((val, cb) => {
-    StudyProgram.create({...val, department_id: id}).then(resp => {
-      message.success(`Program Studi ${resp.name} berhasil ditambah`);
-      getStudyPrograms();
+  const createDepartment = useCallback((val, cb) => {
+    Department.create(val).then(resp => {
+      message.success(`Jurusan ${resp.name} berhasil ditambah`);
+      getDepartments();
       cb();
       toggleModal(false);
     }).catch(errorCatch);
-  }, [StudyProgram, getStudyPrograms, errorCatch, id]);
+  }, [Department, getDepartments, errorCatch]);
 
-  const updateStudyProgram = useCallback((val, cb) => {
-    if (typeof studyProgram !== 'undefined') {
-      studyProgram.update(val).then(resp => {
-        message.success(`Program studi ${studyProgram.name} berhasil diubah menjadi ${resp.name}`);
-        getStudyPrograms();
+  const updateDepartment = useCallback((val, cb) => {
+    if (typeof department !== 'undefined') {
+      department.update(val).then(resp => {
+        message.success(`Jurusan ${department.name} berhasil diubah menjadi ${resp.name}`);
+        getDepartments();
         cb();
         toggleModal(false);
       }).catch(errorCatch);
     }
-  }, [studyProgram, errorCatch, getStudyPrograms]);
+  }, [department, errorCatch, getDepartments]);
 
   return (
     <div>
-      <PageHeader title={typeof department !== 'undefined' ? department.name : `Program Studi`} onBack={() => push('/dashboard/jurusan')} />
-      <AddStudyProgram visible={modal}
+      <Typography.Title level={5}>Jurusan</Typography.Title>
+      <AddDepartment visible={modal}
         onCancel={() => {
           toggleModal(false);
-          setStudyProgram(undefined)
+          setDepartment(undefined)
         }}
         onOpen={() => toggleModal(true)}
-        onSubmit={typeof studyProgram !== 'undefined' ? updateStudyProgram : createStudyProgram}
-        studyProgram={studyProgram}
+        onSubmit={typeof department !== 'undefined' ? updateDepartment : createDepartment}
+        department={department}
       />
       <Table
-        dataSource={studtPrograms.rows}
+        dataSource={departments.rows}
         rowKey={item => `${item.id}`}
         columns={columns}
         bordered

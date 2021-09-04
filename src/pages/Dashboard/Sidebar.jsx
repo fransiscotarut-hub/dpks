@@ -3,7 +3,8 @@ import { Divider, Layout, Menu, Tooltip, Typography } from "antd"
 import {
   UserOutlined,
   HomeOutlined,
-  BuildOutlined
+  BuildOutlined,
+  SettingOutlined
 } from '@ant-design/icons'
 import useAuth from "hooks/useAuth";
 import { useHistory, useRouteMatch, useLocation } from "react-router-dom";
@@ -44,11 +45,14 @@ const Sidebar = () => {
         <Menu.Item icon={<HomeOutlined />} key={`${path}`}>
           Halaman Utama
         </Menu.Item>
-        <Menu.Item icon={<BuildOutlined />} key={`${path}/program-studi`}>
-          Program Studi
+        <Menu.Item icon={<BuildOutlined />} key={`${path}/jurusan`}>
+          Jurusan
         </Menu.Item>
         <Menu.Item icon={<UserOutlined />} key={`${path}/pengguna`}>
           Pengguna
+        </Menu.Item>
+        <Menu.Item icon={<SettingOutlined />} key={`${path}/pengaturan-form`}>
+          Pengaturan
         </Menu.Item>
       </Menu>
     </Sider>
