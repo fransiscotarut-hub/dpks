@@ -105,7 +105,7 @@ const Layout = () => {
         rowKey={item => `${item.id}`}
         columns={columns}
         bordered
-        pagination={{ current: page, onChange: setPage, pageSize: limit, onShowSizeChange: (page, size) => setLimit(size) }}
+        pagination={{ current: page, onChange: setPage, pageSize: limit, onShowSizeChange: (page, size) => setLimit(size), total: users.count }}
         loading={{ indicator: <LoadingOutlined spin={loading} />, spinning: loading, tip: 'Mengambil data user' }}
       />
     </div>

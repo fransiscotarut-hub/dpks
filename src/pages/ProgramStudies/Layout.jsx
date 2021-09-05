@@ -8,7 +8,7 @@ import useErrorCatcher from 'hooks/useErrorCatcher';
 
 const Layout = () => {
   const [modal, toggleModal] = useState(false);
-  const [studtPrograms, setStudyPrograms] = useState({ rows: [], count: 0 });
+  const [studyPrograms, setStudyPrograms] = useState({ rows: [], count: 0 });
   const [studyProgram, setStudyProgram] = useState(undefined);
   const [department, setDepartment] = useState(undefined);
   const [page, setPage] = useState(1);
@@ -121,11 +121,11 @@ const Layout = () => {
         studyProgram={studyProgram}
       />
       <Table
-        dataSource={studtPrograms.rows}
+        dataSource={studyPrograms.rows}
         rowKey={item => `${item.id}`}
         columns={columns}
         bordered
-        pagination={{ current: page, onChange: setPage, pageSize: limit, onShowSizeChange: (page, size) => setLimit(size) }}
+        pagination={{ current: page, onChange: setPage, pageSize: limit, onShowSizeChange: (page, size) => setLimit(size), total: studyPrograms.count }}
         loading={{ indicator: <LoadingOutlined spin={loading} />, spinning: loading, tip: 'Mengambil data user' }}
       />
     </div>
