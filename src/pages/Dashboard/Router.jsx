@@ -2,11 +2,12 @@ import { Spin } from 'antd';
 import { lazy, Suspense } from 'react';
 import { LoadingOutlined } from '@ant-design/icons'
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
+import FourOFourPage from 'components/FourOFourPage';
 
 const Department = lazy(() => import('pages/Departments/Router'));
 const Home = lazy(() => import('pages/Home'));
 const Users = lazy(() => import('pages/Users'));
-const Setting = lazy(() => import('pages/Setting'));
+const Setting = lazy(() => import('pages/Setting/Router'));
 
 const Router = () => {
   const { path } = useRouteMatch();
@@ -18,6 +19,7 @@ const Router = () => {
         <Route path={`${path}/pengguna`} component={Users} />
         <Route path={`${path}/jurusan`} component={Department} />
         <Route path={`${path}/pengaturan-form`} component={Setting} />
+        <FourOFourPage />
       </Switch>
     </Suspense>
   )

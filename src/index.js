@@ -1,5 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { ConfigProvider } from 'antd'
+import moment from 'moment';
+import 'moment/locale/id'
+import idID from 'antd/lib/locale/id_ID';
 import { HashRouter } from 'react-router-dom'
 import './index.css';
 import App from './App';
@@ -7,12 +11,16 @@ import reportWebVitals from './reportWebVitals';
 import { GlobalModelsProvider } from './contexts/ModelsContext';
 import { UserProvider } from './contexts/UserContext';
 
+moment.locale('id')
+
 ReactDOM.render(
   <React.Fragment>
     <GlobalModelsProvider>
       <UserProvider>
         <HashRouter>
-          <App />
+          <ConfigProvider locale={idID}>
+            <App />
+          </ConfigProvider>
         </HashRouter>
       </UserProvider>
     </GlobalModelsProvider>

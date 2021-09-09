@@ -1,9 +1,12 @@
 import { useCallback, useState, useEffect } from "react";
 import { Typography, List, Card, Space, Tooltip, Button, message, Popconfirm } from "antd"
+import { DeleteOutlined, EditOutlined, FormOutlined, LoadingOutlined } from "@ant-design/icons";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import useErrorCatcher from "hooks/useErrorCatcher";
 import useModels from "hooks/useModels";
-import { DeleteOutlined, EditOutlined, FormOutlined, LoadingOutlined } from "@ant-design/icons";
 import AddDocument from "./AddDocument";
+
+const doc = document;
 
 const Layout = () => {
   const [modal, toggleModal] = useState(false);
@@ -14,6 +17,10 @@ const Layout = () => {
   const [loading, toggleLoading] = useState(true);
   const { errorCatch } = useErrorCatcher();
   const { models: { Document } } = useModels();
+  const { push } = useHistory();
+  const { path } = useRouteMatch();
+
+  doc.title = "Dashboard - Pengaturan"
 
   const getDocuments = useCallback(() => {
     const offset = (page - 1) * limit;
@@ -49,6 +56,13 @@ const Layout = () => {
     }).catch(errorCatch);
   }, [document, getDocuments, errorCatch]);
 
+  const deleteDocument = useCallback((document) => {
+    document.delete().then(resp => {
+      message.success(`Form ${resp.name} berhasil dihapus`);
+      getDocuments();
+    }).catch(errorCatch);
+  }, [errorCatch, getDocuments]);
+
   return (
     <div>
       <Typography.Title level={5}>Pengaturan Form DKPS</Typography.Title>
@@ -72,7 +86,9 @@ const Layout = () => {
               <span>{item.name}</span>
               <Space>
                 <Tooltip title={`Edit Field Form ${item.name}`}>
-                  <Button type="primary" size="small" icon={<FormOutlined />} />
+                  <Button onClick={() => {
+                    push(`${path}/${item.id}`);
+                  }} type="primary" size="small" icon={<FormOutlined />} />
                 </Tooltip>
                 <Tooltip title={`Edit ${item.name}`}>
                   <Button onClick={() => {
@@ -87,6 +103,7 @@ const Layout = () => {
                     okButtonProps={{ danger: true, type: 'primary' }}
                     okText="Hapus"
                     cancelText="Batal"
+                    onConfirm={() => deleteDocument(item)}
                   >
                     <Button size="small" type="primary" danger icon={<DeleteOutlined />} />
                   </Popconfirm>
