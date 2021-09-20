@@ -5,6 +5,7 @@ import useErrorCatcher from "hooks/useErrorCatcher";
 import useModels from "hooks/useModels";
 import { DeleteOutlined, EditOutlined, LoadingOutlined } from "@ant-design/icons";
 import AddFormField from "./AddFormField";
+import { fieldType } from "translation";
 
 const Layout = () => {
   const [fields, setFields] = useState([]);
@@ -93,7 +94,7 @@ const Layout = () => {
                 <span>
                   <div>
                     <Typography.Text>
-                      {item.field_type}
+                      {fieldType[item.field_type]}
                     </Typography.Text>
                   </div>
                   <Typography.Text type="secondary">
