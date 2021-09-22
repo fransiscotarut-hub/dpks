@@ -9,6 +9,7 @@ const Home = lazy(() => import('pages/Home'));
 const Users = lazy(() => import('pages/Users'));
 const Setting = lazy(() => import('pages/Setting/Router'));
 const FieldValues = lazy(() => import('pages/FieldValues'));
+const SimulationScores = lazy(() => import('pages/SimulationScores'));
 
 const Router = () => {
   const { path } = useRouteMatch();
@@ -19,6 +20,7 @@ const Router = () => {
         <Route path={`${path}`} exact component={Home} />
         <Route path={`${path}/pengguna`} component={Users} />
         <Route path={`${path}/dkps`} component={FieldValues} />
+        <Route path={`${path}/simulasi-nilai`} component={SimulationScores} />
         <Route path={`${path}/jurusan`} component={Department} />
         <Route path={`${path}/pengaturan-form`} component={Setting} />
         <FourOFourPage />

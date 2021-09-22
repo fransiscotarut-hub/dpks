@@ -5,7 +5,8 @@ import {
   HomeOutlined,
   BuildOutlined,
   SettingOutlined,
-  FormOutlined
+  FormOutlined,
+  SnippetsOutlined
 } from '@ant-design/icons'
 import useAuth from "hooks/useAuth";
 import { useHistory, useRouteMatch, useLocation } from "react-router-dom";
@@ -48,6 +49,9 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item icon={<FormOutlined />} key={`${path}/dkps`}>
           DKPS
+        </Menu.Item>
+        <Menu.Item icon={<SnippetsOutlined />} key={`${path}/simulasi-nilai`}>
+          Simulasi Nilai
         </Menu.Item>
         <Menu.Item icon={<BuildOutlined />} key={`${path}/jurusan`}>
           Jurusan
