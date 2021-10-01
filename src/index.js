@@ -14,7 +14,7 @@ import { UserProvider } from './contexts/UserContext';
 moment.locale('id')
 
 ReactDOM.render(
-  <React.Fragment>
+  <React.StrictMode>
     <GlobalModelsProvider>
       <UserProvider>
         <HashRouter>
@@ -24,7 +24,7 @@ ReactDOM.render(
         </HashRouter>
       </UserProvider>
     </GlobalModelsProvider>
-  </React.Fragment>,
+  </React.StrictMode>,
   document.getElementById('root')
 );
 

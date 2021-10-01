@@ -15,7 +15,7 @@ const Layout = () => {
   const [limit, setLimit] = useState(10);
   const [loading, toggleLoading] = useState(true);
   const { id } = useParams();
-  const {push} = useHistory()
+  const { push } = useHistory()
   const { models: { StudyProgram, Department } } = useModels();
   const { errorCatch } = useErrorCatcher();
 
@@ -31,7 +31,7 @@ const Layout = () => {
     toggleLoading(true);
     const offset = (page - 1) * limit;
     StudyProgram.collection({
-      attributes: ['name', 'department_id'],
+      attributes: ['name', 'type', 'diploma', 'department_id'],
       limit,
       offset,
       where: {
@@ -62,6 +62,18 @@ const Layout = () => {
       dataIndex: 'name'
     },
     {
+      title: 'Program Diploma',
+      key: 'diploma',
+      dataIndex: 'diploma',
+      render: (val) => `Program Diploma ${val}`
+    },
+    {
+      title: 'Kelompok',
+      key: 'type',
+      dataIndex: 'type',
+      render: (val) => val === 'technology' ? 'Kelompok Sains Teknologi' : `Kelompok Sosial Humaniora`
+    },
+    {
       title: 'Edit | Hapus',
       key: 'action',
       render: (row) => (
@@ -79,6 +91,7 @@ const Layout = () => {
               cancelText="Batal"
               okButtonProps={{ danger: true, type: 'primary' }}
               onConfirm={() => deleteStudyProgram(row)}
+              placement="topRight"
             >
               <Button size="small" type="primary" danger icon={<DeleteOutlined />} />
             </Popconfirm>
@@ -89,7 +102,7 @@ const Layout = () => {
   ]), [deleteStudyProgram]);
 
   const createStudyProgram = useCallback((val, cb) => {
-    StudyProgram.create({...val, department_id: id}).then(resp => {
+    StudyProgram.create({ ...val, department_id: id }).then(resp => {
       message.success(`Program Studi ${resp.name} berhasil ditambah`);
       getStudyPrograms();
       cb();
