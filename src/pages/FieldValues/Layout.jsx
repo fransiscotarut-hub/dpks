@@ -36,7 +36,7 @@ const Layout = () => {
   return (
     <div>
       <Typography.Title level={5}>DKPS</Typography.Title>
-      <Menu defaultSelectedKeys={[form]} selectedKeys={[form]} onClick={ev => push({ pathname, search: `form=${ev.key}` })} mode="horizontal">
+      <Menu theme="dark" defaultSelectedKeys={[form]} selectedKeys={[form]} onClick={ev => push({ pathname, search: `form=${ev.key}` })} mode="horizontal">
         {
           loading ?
             <Menu.Item key="loading">Loading DKPS</Menu.Item>

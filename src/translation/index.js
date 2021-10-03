@@ -1,4 +1,4 @@
 export const fieldType = {
-  string: 'Teks',
+  text: 'Teks',
   number: 'Angka'
 }

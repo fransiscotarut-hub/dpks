@@ -1,9 +1,9 @@
 import { useState, useCallback, useEffect, useMemo } from "react"
-import { PageHeader, List, Card, Button, message, Space, Tooltip, Divider, Typography } from "antd";
+import { PageHeader, List, Card, Button, message, Space, Tooltip, Divider, Typography, Descriptions } from "antd";
 import { useParams, useHistory } from "react-router-dom"
 import useErrorCatcher from "hooks/useErrorCatcher";
 import useModels from "hooks/useModels";
-import { DeleteOutlined, EditOutlined, LoadingOutlined } from "@ant-design/icons";
+import { EditOutlined, LoadingOutlined } from "@ant-design/icons";
 import AddFormField from "./AddFormField";
 import { fieldType } from "translation";
 
@@ -21,7 +21,7 @@ const Layout = () => {
   const getFields = useCallback(() => {
     toggleLoading(true);
     DocumentField.collection({
-      attributes: ['name', 'field_type'],
+      attributes: ['properties'],
       where: {
         document_id: id
       }
@@ -44,7 +44,8 @@ const Layout = () => {
 
   const createField = useCallback((val, cb) => {
     DocumentField.create({ ...val, document_id: id }).then(resp => {
-      message.success(`Field ${resp.name} berhasil ditambah`);
+      message.success(`Field berhasil ditambah`);
+      console.log(resp)
       getFields();
       cb();
       toggleModal(false);
@@ -54,7 +55,7 @@ const Layout = () => {
   const updateField = useCallback((val) => {
     if (typeof field !== 'undefined') {
       field.update({ ...val }).then(resp => {
-        message.success(`Data field ${resp.name} berhasil disimpan`);
+        message.success(`Data field berhasil disimpan`);
         getFields();
         toggleModal(false);
       }).catch(errorCatch);
@@ -79,41 +80,21 @@ const Layout = () => {
         dataSource={fields}
         renderItem={item => (
           <Card size="small" style={{ marginBottom: 4, marginTop: 4 }}>
-            <List.Item>
-              <Space size={'large'} split={<Divider type="vertical" />}>
-                <div>
-                  <div>
-                    <Typography.Text>
-                      {item.name}
-                    </Typography.Text>
-                  </div>
-                  <Typography.Text type="secondary">
-                    <small> Nama Field </small>
-                  </Typography.Text>
-                </div>
-                <span>
-                  <div>
-                    <Typography.Text>
-                      {fieldType[item.field_type]}
-                    </Typography.Text>
-                  </div>
-                  <Typography.Text type="secondary">
-                    <small> Tipe Field </small>
-                  </Typography.Text>
-                </span>
-              </Space>
-              <Space split={<Divider type="vertical" />} size="small">
-                <Tooltip title={`Edit ${item.name}`}>
-                  <Button onClick={() => {
-                    toggleModal(true);
-                    setField(item);
-                  }} size="small" icon={<EditOutlined />} />
-                </Tooltip>
-                <Tooltip placement="topRight" title={`Hapus ${item.name}`}>
-                  <Button type="primary" danger size="small" icon={<DeleteOutlined />} />
-                </Tooltip>
-              </Space>
-            </List.Item>
+            <Descriptions size="small" column={1}>
+              {
+                item.properties.map(prop => (
+                  <Descriptions.Item label={prop.field} ><Typography.Text type="secondary">{fieldType[prop.type]}</Typography.Text></Descriptions.Item>
+                ))
+              }
+            </Descriptions>
+            <Space size={2} split={<Divider type="vertical" />}>
+              <Tooltip title="Edit Field">
+                <Button size="small" onClick={() => {
+                  setField(item);
+                  toggleModal(true);
+                }} icon={<EditOutlined />}></Button>
+              </Tooltip>
+            </Space>
           </Card>
         )}
         rowKey={item => `${item.id}`}

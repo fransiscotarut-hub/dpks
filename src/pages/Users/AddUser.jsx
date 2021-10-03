@@ -1,6 +1,8 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { Button, Modal, Form, Input, Select } from 'antd';
+import { Button, Modal, Form, Input, Select, Cascader } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import useModels from 'hooks/useModels';
+import useErrorCatcher from 'hooks/useErrorCatcher';
 
 // 'program_chief' => kaprodi , 'chief' => kajur, 'vice_director' => wadir, 'director' => direk, 'head_team' => tim institusi, 'program_team' => tim prodi, 'administrator' => admin
 
@@ -8,6 +10,10 @@ const { useForm, Item } = Form;
 
 const AddUser = ({ visible, onCancel, onSubmit, onOpen, user }) => {
   const [loading, toggleLoading] = useState(false);
+  const [departments, setDepartments] = useState([]);
+  const [userType, setUserType] = useState(undefined);
+  const { models: { Department } } = useModels();
+  const { errorCatch } = useErrorCatcher();
   const [form] = useForm();
 
   const isEdit = useMemo(() => (typeof user !== 'undefined'), [user]);
@@ -29,6 +35,20 @@ const AddUser = ({ visible, onCancel, onSubmit, onOpen, user }) => {
       type: user.type
     });
   }, [user, form]);
+
+  const getDepartments = useCallback(() => {
+    Department.collection({
+      attributes: ['name'],
+      include: [{
+        model: 'StudyProgram',
+        attributes: ['name', 'id']
+      }]
+    }).then(resp => {
+      setDepartments(resp.rows);
+    }).catch(errorCatch);
+  }, [Department, errorCatch]);
+
+  useEffect(() => getDepartments(), [getDepartments]);
 
   return (
     <>
@@ -53,6 +73,15 @@ const AddUser = ({ visible, onCancel, onSubmit, onOpen, user }) => {
               <Select.Option value="head_team">Tim Akreditasi Institusi</Select.Option>
               <Select.Option value="program_team">Tim Akreditasi Program Studi</Select.Option>
               <Select.Option value="administrator">Administrator</Select.Option>
+            </Select>
+          </Item>
+          <Item name="department" rules={[{ required: true, message: 'Pilih jurusan' }]} label="Jurusan">
+            <Select optionFilterProp="children" showSearch loading={loading} placeholder="Jurusan">
+              {
+                departments.map(department => (
+                  <Select.Option key={department.id} value={department.id}>{department.name}</Select.Option>
+                ))
+              }
             </Select>
           </Item>
           <Item>
