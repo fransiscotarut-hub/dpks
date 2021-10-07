@@ -27,7 +27,7 @@ const AddFormField = ({ visible, onCancel, onSubmit, field }) => {
       visible={visible}
       onCancel={onCancel}
       footer={null}
-      title={isEdit ? `Edit ${field.name}` : `Tambah field`}
+      title={isEdit ? `Edit Form` : `Tambah field`}
       afterClose={clearForm}
       confirmLoading={loading}
     >

@@ -30,19 +30,19 @@ const Sidebar = () => {
         :
         <div style={{ padding: 24, paddingBottom: 0, overflow: 'hidden' }}>
           <Tooltip placement="right" title={`${user.name}`}>
-          <Avatar style={{background: '#177ddc'}}>
-            {`${user.username}`.charAt(0).toUpperCase()}
-          </Avatar>
+            <Avatar style={{ background: '#177ddc' }}>
+              {`${user.username}`.charAt(0).toUpperCase()}
+            </Avatar>
           </Tooltip>
         </div>
       }
       <Divider />
       <Menu
         mode="inline"
-        defaultOpenKeys={['sub1']}
         theme="dark"
         onClick={event => push(`${event.key}`)}
         defaultSelectedKeys={[pathname]}
+        selectedKeys={[pathname]}
       >
         <Menu.Item icon={<HomeOutlined />} key={`${path}`}>
           Halaman Utama

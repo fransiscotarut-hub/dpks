@@ -37,8 +37,8 @@ const Layout = () => {
       <Header title="DKPS" style={{ background: '#1f1f1f' }} extra={<Button loading={loading} onClick={logout} size="small" icon={<LogoutOutlined />} danger type="primary" >Logout</Button>} />
       <AntLayout>
         <Sidebar />
-        <AntLayout style={{ overflow: 'auto' }}>
-          <Content className="site-layout">
+        <AntLayout>
+          <Content className="site-layout" style={{ overflow: 'auto' }}>
             <Breadcrumb style={{ margin: 15 }}>
               <Breadcrumb.Item>
                 <DashboardOutlined />

@@ -68,7 +68,7 @@ const Layout = () => {
     <div>
       <PageHeader
         onBack={() => push('/dashboard/pengaturan-form')} title={typeof form !== 'undefined' ? `Form ${form.name}` : 'Form'}
-        extra={<Button onClick={() => toggleModal(true)}>Tambah Field</Button>}
+        extra={fields.length > 0 ? [] : <Button onClick={() => toggleModal(true)}>Tambah Field</Button>}
       />
       <AddFormField visible={modal} field={field} onCancel={() => {
         toggleModal(false);
@@ -88,7 +88,7 @@ const Layout = () => {
               }
             </Descriptions>
             <Space size={2} split={<Divider type="vertical" />}>
-              <Tooltip title="Edit Field">
+              <Tooltip placement="right" title="Edit Field">
                 <Button size="small" onClick={() => {
                   setField(item);
                   toggleModal(true);

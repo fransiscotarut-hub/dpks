@@ -28,6 +28,7 @@ const Layout = () => {
     Document.collection({
       limit, offset,
       attributes: ['name'],
+      order: [['id', 'asc']]
     }).then(resp => {
       setDocuments(resp);
       toggleLoading(false);
@@ -44,6 +45,7 @@ const Layout = () => {
       getDocuments();
       cb();
       toggleModal(false);
+      // setPage(1);
     }).catch(errorCatch);
   }, [Document, getDocuments, errorCatch]);
 
