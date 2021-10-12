@@ -95,8 +95,8 @@ const Scores = () => {
     }
   ], [])
   return (
-    <div>+
-      <Button >Tambah Data Simulasi</Button>
+    <div>
+      <Button>Tambah Data Simulasi</Button>
       <Table
         style={{ marginTop: 12 }}
         dataSource={[]}
