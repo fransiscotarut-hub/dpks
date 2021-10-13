@@ -47,21 +47,26 @@ const Sidebar = () => {
         <Menu.Item icon={<HomeOutlined />} key={`${path}`}>
           Halaman Utama
         </Menu.Item>
-        <Menu.Item icon={<FormOutlined />} key={`${path}/dkps`}>
-          DKPS
-        </Menu.Item>
+        {['chief', 'program_chief', 'program_team', 'head_team', 'administrator',].includes(user.type) &&
+          <Menu.Item icon={<FormOutlined />} key={`${path}/dkps`}>
+            DKPS
+          </Menu.Item>}
         <Menu.Item icon={<SnippetsOutlined />} key={`${path}/simulasi-nilai`}>
           Simulasi Nilai
         </Menu.Item>
-        <Menu.Item icon={<BuildOutlined />} key={`${path}/jurusan`}>
-          Jurusan
-        </Menu.Item>
-        <Menu.Item icon={<UserOutlined />} key={`${path}/pengguna`}>
-          Pengguna
-        </Menu.Item>
-        <Menu.Item icon={<SettingOutlined />} key={`${path}/pengaturan-form`}>
-          Pengaturan
-        </Menu.Item>
+        {user.type === 'administrator' &&
+          <>
+            <Menu.Item icon={<BuildOutlined />} key={`${path}/jurusan`}>
+              Jurusan
+            </Menu.Item>
+            <Menu.Item icon={<UserOutlined />} key={`${path}/pengguna`}>
+              Pengguna
+            </Menu.Item>
+            <Menu.Item icon={<SettingOutlined />} key={`${path}/pengaturan-form`}>
+              Pengaturan
+            </Menu.Item>
+          </>
+        }
       </Menu>
     </Sider>
   )

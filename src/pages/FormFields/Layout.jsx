@@ -80,6 +80,7 @@ const Layout = () => {
         dataSource={fields}
         renderItem={item => (
           <Card size="small" style={{ marginBottom: 4, marginTop: 4 }}>
+            <Typography.Title level={5}>Field {form?.name}</Typography.Title>
             <Descriptions size="small" column={1}>
               {
                 item.properties.map(prop => (

@@ -1,9 +1,10 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
-import { Typography, Table, Space, Tooltip, Button, message, Popconfirm } from 'antd'
+import { Typography, Table, Space, Tooltip, Button, message, Popconfirm, Tag } from 'antd'
 import { DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
 import AddUser from './AddUser'
 import useModels from 'hooks/useModels';
 import useErrorCatcher from 'hooks/useErrorCatcher';
+import { userType } from 'translation';
 
 const Layout = () => {
   const [modal, toggleModal] = useState(false);
@@ -21,7 +22,17 @@ const Layout = () => {
     toggleLoading(true);
     const offset = (page - 1) * limit;
     User.collection({
-      attributes: ['name', 'username', 'type'],
+      attributes: ['name', 'username', 'type', 'department_id', 'study_program_id'],
+      include: [
+        {
+          model: 'Department',
+          attributes: ['name'],
+        },
+        {
+          model: 'StudyProgram',
+          attributes: ['name'],
+        },
+      ],
       limit,
       offset
     }).then(resp => {
@@ -55,7 +66,14 @@ const Layout = () => {
     {
       title: 'Tipe Pengguna',
       key: 'type',
-      dataIndex: 'type'
+      dataIndex: 'type',
+      render: (value, row) => (
+        <Space>
+          <Tag color="blue">{userType[value]}</Tag>
+          {row.department !== null && <Tag color="geekblue">{row.department.name}</Tag>}
+          {row.study_program !== null && <Tag color="success">{row.study_program.name}</Tag>}
+        </Space>
+      )
     },
     {
       title: 'Edit | Hapus',
@@ -75,6 +93,7 @@ const Layout = () => {
               cancelText="Batal"
               okButtonProps={{ danger: true, type: 'primary' }}
               onConfirm={() => deleteUser(row)}
+              placement="topRight"
             >
               <Button size="small" type="primary" danger icon={<DeleteOutlined />} />
             </Popconfirm>
@@ -85,7 +104,21 @@ const Layout = () => {
   ]), [deleteUser]);
 
   const createUser = useCallback((val, cb) => {
-    User.create(val).then(resp => {
+    User.create({
+      ...val,
+      ...(val.type === 'chief' ?
+        {
+          department_id: val.department[0],
+        }
+        :
+        ['program_chief', 'program_team'].includes(val.type) ?
+          {
+            department_id: val.department[0],
+            study_program_id: val.department[1],
+          }
+          : {}
+      )
+    }).then(resp => {
       message.success(`Pengguna ${resp.name} berhasil ditambah`);
       getUsers();
       cb();

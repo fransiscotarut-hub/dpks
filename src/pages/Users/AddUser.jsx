@@ -19,7 +19,7 @@ const AddUser = ({ visible, onCancel, onSubmit, onOpen, user }) => {
   const isEdit = useMemo(() => (typeof user !== 'undefined'), [user]);
 
   const clearForm = useCallback(() => {
-    form.resetFields(['name', 'username', 'password', 'type']);
+    form.resetFields(['name', 'username', 'password', 'type', 'department']);
     toggleLoading(false);
   }, [form]);
 
@@ -50,11 +50,15 @@ const AddUser = ({ visible, onCancel, onSubmit, onOpen, user }) => {
 
   useEffect(() => getDepartments(), [getDepartments]);
 
+  const onValueChange = useCallback((val, changedValues) => {
+    setUserType(changedValues.type);
+  }, [])
+
   return (
     <>
       <Button style={{ marginBottom: 12 }} onClick={onOpen}>Tambah Pengguna</Button>
       <Modal visible={visible} onCancel={onCancel} title={isEdit ? `Edit ${user.name}` : `Tambah Pengguna`} footer={null}>
-        <Form onFinish={loading ? undefined : onFinish} form={form} layout="vertical">
+        <Form onValuesChange={onValueChange} onFinish={loading ? undefined : onFinish} form={form} layout="vertical">
           <Item name="name" rules={[{ required: true, message: 'Masukkan nama pengguna' }]} label="Nama">
             <Input prefix={loading && <LoadingOutlined spin />} placeholder="Nama" />
           </Item>
@@ -75,15 +79,25 @@ const AddUser = ({ visible, onCancel, onSubmit, onOpen, user }) => {
               <Select.Option value="administrator">Administrator</Select.Option>
             </Select>
           </Item>
-          <Item name="department" rules={[{ required: true, message: 'Pilih jurusan' }]} label="Jurusan">
-            <Select optionFilterProp="children" showSearch loading={loading} placeholder="Jurusan">
-              {
-                departments.map(department => (
-                  <Select.Option key={department.id} value={department.id}>{department.name}</Select.Option>
-                ))
-              }
-            </Select>
-          </Item>
+          {['program_team', 'program_chief', 'chief'].includes(userType) && <Item name="department" rules={[{ required: true, message: 'Pilih jurusan' }]} label="Jurusan">
+            <Cascader placeholder="Pilih Jurusan/Program Studi" options={departments.map(department => ({
+              label: department.name,
+              value: department.id,
+              ...(
+                userType !== 'chief' ?
+                  {
+                    children: department.study_programs.map(program => (
+                      {
+                        label: program.name,
+                        value: program.id
+                      }
+                    ))
+                  }
+                  :
+                  {}
+              )
+            }))} />
+          </Item>}
           <Item>
             {isEdit ?
               <Button htmlType="submit" type="primary" loading={loading}>Simpan</Button>

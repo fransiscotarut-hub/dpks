@@ -1,5 +1,5 @@
 import { memo, useEffect, useCallback, useState, useMemo } from "react"
-import { Modal, Form, Input, InputNumber, Button } from 'antd'
+import { Modal, Form, Input, InputNumber, Button, Select } from 'antd'
 import useModels from "hooks/useModels";
 import { useLocation } from "react-router";
 import { parse } from "query-string";
@@ -60,7 +60,19 @@ const AddValue = memo(({ visible, onCancel, onSubmit, value }) => {
                   prop.type === 'text' ?
                     <Input prefix={loading && <LoadingOutlined />} placeholder={prop.field} />
                     :
-                    <InputNumber min={0} style={{ width: '100%' }} placeholder={prop.field} />
+                    prop.type === 'number' ?
+                      <InputNumber min={0} disabled={loading} style={{ width: '100%' }} placeholder={prop.field} />
+                      :
+                      prop.type === 'option' ?
+                        <Select placeholder="Pilih nilai pilihan / opsi" loading={loading}>
+                          {
+                            prop.options.split(",").map(option => (
+                              <Select.Option value={`${option}`.trim()} key={`${option}`.trim()}>{`${option}`.trim()}</Select.Option>
+                            ))
+                          }
+                        </Select>
+                        :
+                        <Input prefix={loading && <LoadingOutlined />} placeholder={prop.field} />
                 }
               </Item>
             ))

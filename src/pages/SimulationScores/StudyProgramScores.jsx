@@ -6,6 +6,7 @@ import useModels from 'hooks/useModels';
 import useErrorCatcher from 'hooks/useErrorCatcher';
 import AddScore from './AddScore';
 import { DeleteOutlined, EditOutlined, Loading3QuartersOutlined } from '@ant-design/icons';
+import useAuth from 'hooks/useAuth';
 
 const StudyProgramScores = () => {
   const [modal, toggleModal] = useState(false);
@@ -15,13 +16,20 @@ const StudyProgramScores = () => {
   const { models: { StudyProgramScore } } = useModels();
   const { search } = useLocation();
   const { form } = useMemo(() => parse(search), [search]);
+  const { user } = useAuth();
 
   const getScores = useCallback(() => {
     toggleLoading(true);
     StudyProgramScore.collection({
       attributes: ['score_type', 'magister', 'doctor', 'profession'],
       where: {
-        score_type: form
+        score_type: form,
+        ...(
+          ['program_chief', 'program_team'].includes(user.type) ?
+            { study_program_id: user.study_program_id }
+            :
+            {}
+        )
       },
       include: [{
         model: 'StudyProgram',
@@ -29,13 +37,19 @@ const StudyProgramScores = () => {
         include: [{
           model: 'Department',
           attributes: ['id', 'name']
-        }]
+        }],
+        ...(
+          user.type === 'chief' ?
+            { department_id: user.department_id }
+            :
+            {}
+        )
       }]
     }).then(resp => {
       setScores(resp.rows);
       toggleLoading(false);
     }).catch(errorCatch)
-  }, [StudyProgramScore, errorCatch, form]);
+  }, [StudyProgramScore, errorCatch, form, user]);
 
   useEffect(() => {
     getScores();
@@ -162,8 +176,10 @@ const StudyProgramScores = () => {
 
   return (
     <div>
-      <Button onClick={() => toggleModal(true)}>Tambah Data Simulasi</Button>
-      <AddScore visible={modal} onCancel={() => toggleModal(false)} onSubmit={createScore} />
+      {!['vice_director', 'director', 'chief'].includes(user.type) && <>
+        <Button onClick={() => toggleModal(true)}>Tambah Data Simulasi</Button>
+        <AddScore visible={modal} onCancel={() => toggleModal(false)} onSubmit={createScore} />
+      </>}
       <Table
         size="small"
         dataSource={scores}
