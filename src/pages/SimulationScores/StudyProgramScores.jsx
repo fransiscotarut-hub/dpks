@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
-import { Button, Divider, message, Space, Table, Tooltip } from 'antd';
+import { Button, Divider, message, Popconfirm, Space, Table, Tooltip } from 'antd';
 import { parse } from 'query-string';
 import { useLocation } from 'react-router';
 import useModels from 'hooks/useModels';
@@ -11,6 +11,7 @@ import useAuth from 'hooks/useAuth';
 const StudyProgramScores = () => {
   const [modal, toggleModal] = useState(false);
   const [scores, setScores] = useState([]);
+  const [score, setScore] = useState(undefined);
   const [loading, toggleLoading] = useState(true);
   const { errorCatch } = useErrorCatcher();
   const { models: { StudyProgramScore } } = useModels();
@@ -21,7 +22,7 @@ const StudyProgramScores = () => {
   const getScores = useCallback(() => {
     toggleLoading(true);
     StudyProgramScore.collection({
-      attributes: ['score_type', 'magister', 'doctor', 'profession'],
+      attributes: ['score_type', 'magister', 'doctor', 'profession', 'lecturer', 'chief_lecturer', 'professor'],
       where: {
         score_type: form,
         ...(
@@ -67,6 +68,27 @@ const StudyProgramScores = () => {
     }).catch(errorCatch);
   }, [StudyProgramScore, errorCatch, form, getScores]);
 
+  const updateScore = useCallback((val, cb) => {
+    score.update({
+      ...val, study_program_id: val.study_program_id[1],
+    }).then(resp => {
+      message.success('Nilai berhasil disimpan');
+      console.log(resp);
+      getScores();
+      cb();
+      toggleModal(false);
+      setScore(undefined);
+    }).catch(errorCatch);
+  }, [score, errorCatch, getScores]);
+
+  const deleteScore = useCallback((score) => {
+    score.delete().then(resp => {
+      message.success('Nilai berhasil dihapus');
+      console.log(resp);
+      getScores();
+    }).catch(errorCatch);
+  }, [errorCatch, getScores]);
+
   const columns = useMemo(() => [
     {
       title: 'No.',
@@ -111,21 +133,56 @@ const StudyProgramScores = () => {
       render: (row) => (row.doctor + row.magister + row.profession),
       align: 'center',
     },
+    ...(
+      form === '3.a.1.2' ?
+        [
+          {
+            title: 'NDGB',
+            dataIndex: 'professor',
+            align: 'center',
+            key: 'professor'
+          },
+          {
+            title: 'NDLK',
+            dataIndex: 'chief_lecturer',
+            align: 'center',
+            key: 'chief_lecturer'
+          },
+          {
+            title: 'NDL',
+            dataIndex: 'lecturer',
+            align: 'center',
+            key: 'lecturer'
+          },
+        ]
+        :
+        []
+    ),
     {
       title: 'Edit | Hapus',
       key: 'action',
       render: (row) => (
         <Space size={2} split={<Divider type="vertical" />}>
           <Tooltip title={`Edit nilai`}>
-            <Button size="small" icon={<EditOutlined />} />
+            <Button onClick={() => {
+              setScore(row);
+              toggleModal(true);
+            }} size="small" icon={<EditOutlined />} />
           </Tooltip>
           <Tooltip title={`Hapus nilai`}>
-            <Button size="small" type="primary" danger icon={<DeleteOutlined />} />
+            <Popconfirm title={`Apakah Anda ingin menghapus nilai?`}
+              okText="Hapus"
+              okButtonProps={{ type: 'primary', danger: true }}
+              onConfirm={() => deleteScore(row)}
+              placement="topRight"
+            >
+              <Button size="small" type="primary" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
           </Tooltip>
         </Space>
       )
     }
-  ], []);
+  ], [form, deleteScore]);
 
   const renderSummary = useCallback((pageData) => {
     const dataLength = pageData.length;
@@ -178,7 +235,10 @@ const StudyProgramScores = () => {
     <div>
       {!['vice_director', 'director', 'chief'].includes(user.type) && <>
         <Button onClick={() => toggleModal(true)}>Tambah Data Simulasi</Button>
-        <AddScore visible={modal} onCancel={() => toggleModal(false)} onSubmit={createScore} />
+        <AddScore score={score} visible={modal} onCancel={() => {
+          toggleModal(false);
+          setScore(undefined);
+        }} onSubmit={typeof score !== 'undefined' ? updateScore : createScore} />
       </>}
       <Table
         size="small"

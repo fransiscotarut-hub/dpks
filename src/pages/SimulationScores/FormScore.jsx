@@ -14,7 +14,7 @@ const FormScore = () => {
 
   const getScores = useCallback(() => {
     StudyProgramScore.collection({
-      attributes: ['score_type', 'magister', 'doctor', 'profession'],
+      attributes: ['score_type', 'magister', 'doctor', 'profession', 'lecturer', 'chief_lecturer', 'professor'],
       where: {
         score_type: form === '2.a' ? '3.a.1' : form
       },
@@ -32,7 +32,7 @@ const FormScore = () => {
   }, [StudyProgramScore, errorCatch, form]);
 
   useEffect(() => {
-    getScores();    
+    getScores();
   }, [getScores]);
 
   const sumScore = useMemo(() => (
@@ -55,9 +55,40 @@ const FormScore = () => {
         0
   ), [scores]);
 
+  const dgbScore = useMemo(() => (
+    scores.length > 1 ?
+      scores.map(score => score.professor).reduce((a, b) => (a + b))
+      :
+      scores.length > 0 ?
+        scores.map(score => score.professor)[0]
+        :
+        0
+  ), [scores]);
+
+  const dlkScore = useMemo(() => (
+    scores.length > 1 ?
+      scores.map(score => score.chief_lecturer).reduce((a, b) => (a + b))
+      :
+      scores.length > 0 ?
+        scores.map(score => score.chief_lecturer)[0]
+        :
+        0
+  ), [scores]);
+  const dlScore = useMemo(() => (
+    scores.length > 1 ?
+      scores.map(score => score.lecturer).reduce((a, b) => (a + b))
+      :
+      scores.length > 0 ?
+        scores.map(score => score.lecturer)[0]
+        :
+        0
+  ), [scores]);
+
   const pds3Score = useMemo(() => (
     ((doctorScore / sumScore) * 100).toFixed(3)
   ), [doctorScore, sumScore]);
+
+  const pgblklScore = useMemo(() => (((dgbScore + dlScore + dlkScore) / sumScore) * 100), [dgbScore, dlkScore, dlScore, sumScore]);
 
   return (
     <div>
@@ -128,26 +159,29 @@ const FormScore = () => {
         </Descriptions>
       }
       {form === '3.a.1.2' && <Descriptions style={{ marginTop: 12 }} column={5} layout="vertical" bordered>
-        <Descriptions.Item label="4">
-          text
-        </Descriptions.Item>
+        <Descriptions.Item span={5} label="Skor">{
+          pgblklScore >= 70 ?
+            4
+            :
+            pgblklScore === 70 ?
+              3
+              :
+              pgblklScore < 70 ?
+                2 + ((20 * pgblklScore) / 7)
+                :
+                1
+        }</Descriptions.Item>
+        <Descriptions.Item label="NDTPS">{sumScore}</Descriptions.Item>
+        <Descriptions.Item label="NDGB">{dgbScore}</Descriptions.Item>
+        <Descriptions.Item label="NDLK">{dlkScore}</Descriptions.Item>
+        <Descriptions.Item label="NDL">{dlScore}</Descriptions.Item>
+        <Descriptions.Item label="PGBLKL">{pgblklScore}</Descriptions.Item>
+        <Descriptions.Item label="4">Jika PGBLKL ≥ 70% , maka Skor = 4</Descriptions.Item>
         <Descriptions.Item label="3">
         </Descriptions.Item>
-        <Descriptions.Item label="2">
-          text
-        </Descriptions.Item>
+        <Descriptions.Item label="2">Jika PGBLKL &lt; 70% maka skor = 2 + ((20 x PGBLKL) / 7)</Descriptions.Item>
         <Descriptions.Item label="1"></Descriptions.Item>
-        <Descriptions.Item label="0">text</Descriptions.Item>
-        <Descriptions.Item label="text1" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="text2" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="text3" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="text4" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="text5" span={5}>
-        </Descriptions.Item>
+        <Descriptions.Item label="0">Tidak ada skor diantara 0 dan 2	</Descriptions.Item>
       </Descriptions>}
       {form === '.' && <Descriptions style={{ marginTop: 12 }} column={5} layout="vertical" bordered>
         <Descriptions.Item label="Kelompok sains teknologi" span={5}>
