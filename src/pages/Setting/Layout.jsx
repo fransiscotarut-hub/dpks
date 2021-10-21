@@ -27,7 +27,7 @@ const Layout = () => {
     toggleLoading(true);
     Document.collection({
       limit, offset,
-      attributes: ['name'],
+      attributes: ['name', 'type'],
       order: [['id', 'asc']]
     }).then(resp => {
       setDocuments(resp);
@@ -85,7 +85,10 @@ const Layout = () => {
         renderItem={item => (
           <Card size="small" style={{ marginTop: 4, marginBottom: 4 }}>
             <List.Item>
-              <span>{item.name}</span>
+              <Space>
+                <span>{item.name}</span>
+                <Typography.Text type="secondary">{item.type}</Typography.Text>
+              </Space>
               <Space>
                 <Tooltip title={`Edit Field Form ${item.name}`}>
                   <Button onClick={() => {

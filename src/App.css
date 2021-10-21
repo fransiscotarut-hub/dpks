@@ -1,3 +1,10 @@
 html, body, div#root, .ant-layout {
   height: 100% !important;
 }
+
+.ant-menu-dark.ant-menu-dark:not(.ant-menu-horizontal) .ant-menu-item-selected > span {
+  color: #414141;
+}
+.ant-menu-dark.ant-menu-dark .ant-menu-item-selected > span {
+  color: #414141;
+}

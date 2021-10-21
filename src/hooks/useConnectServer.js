@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import useAuth from './useAuth';
 import useModels from './useModels';
 
@@ -48,9 +48,9 @@ export const useConnectServer = (Connect) => {
       const auth = Connect.getAuthProvider();
       setAuth(auth);
     }
-    
+
     // eslint-disable-next-line
   }, [localModels, Connect]);
 
-  return { error, ready };
+  return useMemo(() => ({ error, ready }), [ready, error]);
 }

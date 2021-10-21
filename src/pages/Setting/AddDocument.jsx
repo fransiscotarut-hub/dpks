@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import { Button, Modal, Form, Input } from 'antd';
+import { Button, Modal, Form, Input, Radio } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 
 // 'program_chief' => kaprodi , 'chief' => kajur, 'vice_director' => wadir, 'director' => direk, 'head_team' => tim institusi, 'program_team' => tim prodi, 'administrator' => admin
@@ -24,7 +24,8 @@ const AddDocument = ({ visible, onCancel, onSubmit, onOpen, document }) => {
 
   useEffect(() => {
     (typeof document !== 'undefined') && form.setFieldsValue({
-      name: document.name
+      name: document.name,
+      type: document.type
     });
   }, [document, form]);
 
@@ -35,7 +36,13 @@ const AddDocument = ({ visible, onCancel, onSubmit, onOpen, document }) => {
         <Form onFinish={loading ? undefined : onFinish} form={form} layout="vertical">
           <Item name="name" rules={[{ required: true, message: 'Masukkan nama form' }]} label="Nama Form">
             <Input prefix={loading && <LoadingOutlined spin />} placeholder="Nama Form" />
-          </Item>          
+          </Item>
+          <Item name="type" rules={[{ required: true, message: 'Pilih diploma' }]} label="Diploma">
+            <Radio.Group>
+              <Radio value="D3">Diploma 3</Radio>
+              <Radio value="D4">Diploma 4</Radio>
+            </Radio.Group>
+          </Item>
           <Item>
             {isEdit ?
               <Button htmlType="submit" type="primary" loading={loading}>Simpan</Button>

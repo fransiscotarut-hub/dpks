@@ -1,4 +1,4 @@
-import { Spin } from 'antd';
+import { Result } from 'antd';
 import { lazy, Suspense } from 'react';
 import { LoadingOutlined } from '@ant-design/icons'
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
@@ -17,7 +17,7 @@ const Router = () => {
   const { user } = useAuth();
 
   return (
-    <Suspense fallback={<Spin spinning size="large" indicator={<LoadingOutlined spin />} tip="Loading Halaman" />}>
+    <Suspense fallback={<Result icon={<LoadingOutlined spin />} title="Loading Halaman" subTitle="Tunggu sebentar" />}>
       <Switch>
         <Route path={`${path}`} exact component={Home} />
         {['chief', 'program_chief', 'program_team', 'head_team', 'administrator',].includes(user.type) &&
