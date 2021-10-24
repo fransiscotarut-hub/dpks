@@ -5,7 +5,6 @@ import { parse } from 'query-string'
 import StudyProgramScores from "./StudyProgramScores";
 import Scores from "./Scores";
 import { ExclamationCircleFilled } from "@ant-design/icons";
-import FormScore from "./FormScore";
 
 
 const { Item } = Menu;
@@ -40,7 +39,6 @@ const Layout = () => {
           :
           <Result icon={<ExclamationCircleFilled />} title="Pilih Form" subTitle="Pilih form nilai simulasi terlebih dahulu" />
       }
-      <FormScore />
     </div>
   )
 }

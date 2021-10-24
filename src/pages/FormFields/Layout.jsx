@@ -84,7 +84,9 @@ const Layout = () => {
             <Descriptions size="small" column={1}>
               {
                 item.properties.map(prop => (
-                  <Descriptions.Item label={prop.field} ><Typography.Text type="secondary">{fieldType[prop.type]}</Typography.Text></Descriptions.Item>
+                  <Descriptions.Item label={prop.field} >
+                    <Typography.Text type="secondary">{fieldType[prop.type]} {fieldType[prop.type] === 'option' && <>({prop.options})</> }</Typography.Text>
+                  </Descriptions.Item>
                 ))
               }
             </Descriptions>

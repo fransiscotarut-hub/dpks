@@ -7,6 +7,7 @@ import useErrorCatcher from 'hooks/useErrorCatcher';
 import AddScore from './AddScore';
 import { DeleteOutlined, EditOutlined, Loading3QuartersOutlined } from '@ant-design/icons';
 import useAuth from 'hooks/useAuth';
+import FormScore from './FormScore';
 
 const StudyProgramScores = () => {
   const [modal, toggleModal] = useState(false);
@@ -251,6 +252,7 @@ const StudyProgramScores = () => {
         style={{ marginTop: 12 }}
         summary={renderSummary}
       />
+      {scores.length > 0 && <FormScore key={scores.length} />}
     </div>
   )
 }

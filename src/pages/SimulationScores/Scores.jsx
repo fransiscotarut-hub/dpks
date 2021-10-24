@@ -375,7 +375,7 @@ const Scores = () => {
             pagination={{ current: page, onChange: setPage, pageSize: limit, defaultPageSize: limit, onShowSizeChange: (page, size) => setLimit(size), total: scores.count }}
             summary={scores.rows.length > 0 ? renderSummary : undefined}
           />
-          <SimulationScore studyProgramScore={sumScore} studentScore={sumStudentScore} study_program_id={selectedDepartment} />
+          <SimulationScore key={scores.rows.length} studyProgramScore={sumScore} studentScore={sumStudentScore} study_program_id={selectedDepartment} />
         </>
         :
         <Result status="info" title="Pilih Program Studi" subTitle="Pilih jurusan dan program studi pada dropdown" extra={
