@@ -8,10 +8,13 @@ import deployment from 'assets/imgs/deployment.png'
 import development from 'assets/imgs/development.png'
 import logo from 'assets/imgs/logo-polimdo.png'
 import { Footer } from 'components/Container';
+import { useHistory } from 'react-router';
 
 const currentYear = (new Date()).getFullYear();
 
 const Layout = () => {
+  const { push } = useHistory();
+
   return (
     <Container fluid={true}>
       <ContainerWithBorder>
@@ -26,7 +29,7 @@ const Layout = () => {
               </Space>
               <HomePageImg alt="presentation" src={meeting} style={{ width: 300, margin: '10px auto' }} />
               <Typography.Text>
-                Selamat datang di website Audit Mutu Internal (AMI) Polimdo. Semua kegiatan AMI Polimdo akan melalui website ini. Silakan klik icon sesuai dengan status dalam Audit Internal.
+                Selamat datang di website Akreditasi Polimdo. Semua kegiatan AMI Polimdo akan melalui website ini. Silakan klik icon sesuai dengan status dalam Audit Internal.
               </Typography.Text>
               <Typography.Text style={{ display: 'block' }}>
                 Jangan lupa tetap selalu berdoa dan berpikir positif, kami doakan bapak/ibu/saudara selalu dalam keadaan sehat, sukses dan bahagia selalu dunia dan akhirat. Amin.
@@ -36,13 +39,13 @@ const Layout = () => {
               <Typography.Text strong style={{ textAlign: 'right', display: 'block', }}>Ketua P4M Polimdo</Typography.Text>
               <Space style={{ marginTop: 35 }}>
                 <Typography.Text>Auditor dan Auditi silakan login di sini</Typography.Text>
-                <Button type="primary">Login di sini</Button>
+                <Button onClick={() => push('/login')} type="primary">Login di sini</Button>
               </Space>
             </Container>
           </Col>
           <Col span={12}>
             <Container fluid={true} style={{ padding: 18 }}>
-              <Typography.Title style={{ textAlign: 'center' }} level={3}>AMI 2021-2022 Semester Ganjil</Typography.Title>
+              <Typography.Title style={{ textAlign: 'center' }} level={3}>Akreditasi 2021-2022 Semester Ganjil</Typography.Title>
               <Row gutter={[16, 16]}>
                 <Col span={12}>
                   <Card hoverable size="small" title="Kepala P4M">
@@ -69,7 +72,7 @@ const Layout = () => {
           </Col>
           <Col span={24}>
             <Footer>
-              <Typography.Text style={{color: '#313131'}}>Copyright &copy; {currentYear}, All rights reserved.</Typography.Text>
+              <Typography.Text style={{ color: '#313131' }}>Copyright &copy; {currentYear}, All rights reserved.</Typography.Text>
             </Footer>
           </Col>
         </Row>
