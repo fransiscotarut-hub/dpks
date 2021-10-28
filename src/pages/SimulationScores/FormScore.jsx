@@ -93,8 +93,22 @@ const FormScore = () => {
   return (
     <div>
       {form === '3.a.1' &&
-        <Descriptions column={5} style={{ marginTop: 12 }} layout="vertical" bordered>
-          <Descriptions.Item label="NDTPS" span={3}>
+        <Descriptions column={5} title="Skor dan Predikat" style={{ marginTop: 18 }} layout="vertical" bordered>
+          <Descriptions.Item label="Predikat" span={1}>
+            {
+              sumScore >= 12 ?
+                "Unggul"
+                :
+                sumScore === 12 ?
+                  "Baik Sekali"
+                  :
+                  sumScore <= 3 ?
+                    "Tidak Terakreditasi"
+                    :
+                    "Baik"
+            }
+          </Descriptions.Item>
+          <Descriptions.Item label="NDTPS" span={2}>
             {
               sumScore
             }
@@ -104,7 +118,13 @@ const FormScore = () => {
               sumScore >= 12 ?
                 4
                 :
-                3
+                sumScore === 12 ?
+                  (2 * ((2 * sumScore) + 12) / 9)
+                  :
+                  sumScore <= 3 ?
+                    0
+                    :
+                    1
             }
           </Descriptions.Item>
           <Descriptions.Item label="4">
@@ -119,8 +139,19 @@ const FormScore = () => {
           <Descriptions.Item label="0">Jika NDTPS &lt; 3 maka skor = 0</Descriptions.Item>
         </Descriptions>}
       {form === '3.a.1.1' &&
-        <Descriptions style={{ marginTop: 12 }} column={5} layout="vertical" bordered>
-          <Descriptions.Item span={2} label="Hasil NDTPS">
+        <Descriptions title="Skor dan Predikat" style={{ marginTop: 18 }} column={5} layout="vertical" bordered>
+          <Descriptions.Item span={1} label="Predikat">
+            {
+              pds3Score > 30 ?
+                "Unggul"
+                :
+                pds3Score < 30 ?
+                  "Baik Sekali"
+                  :
+                  "Baik"
+            }
+          </Descriptions.Item>
+          <Descriptions.Item span={1} label="Hasil NDTPS">
             {
               sumScore
             }
@@ -158,8 +189,8 @@ const FormScore = () => {
           </Descriptions.Item>
         </Descriptions>
       }
-      {form === '3.a.1.2' && <Descriptions style={{ marginTop: 12 }} column={5} layout="vertical" bordered>
-        <Descriptions.Item span={5} label="Skor">{
+      {form === '3.a.1.2' && <Descriptions title="Skor dan Predikat" style={{ marginTop: 18 }} column={5} layout="vertical" bordered>
+        <Descriptions.Item span={3} label="Skor">{
           pgblklScore >= 70 ?
             4
             :
@@ -170,6 +201,18 @@ const FormScore = () => {
                 2 + ((20 * pgblklScore) / 7)
                 :
                 1
+        }</Descriptions.Item>
+        <Descriptions.Item span={2} label="Predikat">{
+          pgblklScore >= 70 ?
+            "Unggul"
+            :
+            pgblklScore === 70 ?
+              "Baik Sekali"
+              :
+              pgblklScore < 70 ?
+                "Baik"
+                :
+                "Tidak Terakreditasi"
         }</Descriptions.Item>
         <Descriptions.Item label="NDTPS">{sumScore}</Descriptions.Item>
         <Descriptions.Item label="NDGB">{dgbScore}</Descriptions.Item>
@@ -182,36 +225,6 @@ const FormScore = () => {
         <Descriptions.Item label="2">Jika PGBLKL &lt; 70% maka skor = 2 + ((20 x PGBLKL) / 7)</Descriptions.Item>
         <Descriptions.Item label="1"></Descriptions.Item>
         <Descriptions.Item label="0">Tidak ada skor diantara 0 dan 2	</Descriptions.Item>
-      </Descriptions>}
-      {form === '.' && <Descriptions style={{ marginTop: 12 }} column={5} layout="vertical" bordered>
-        <Descriptions.Item label="Kelompok sains teknologi" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="4">
-          text
-        </Descriptions.Item>
-        <Descriptions.Item label="3">
-        </Descriptions.Item>
-        <Descriptions.Item label="2">
-          text
-        </Descriptions.Item>
-        <Descriptions.Item label="1"></Descriptions.Item>
-        <Descriptions.Item label="0">text</Descriptions.Item>
-        <Descriptions.Item label="text" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="Kelompok sosial humanioral" span={5}>
-        </Descriptions.Item>
-        <Descriptions.Item label="4">
-          text
-        </Descriptions.Item>
-        <Descriptions.Item label="3">
-        </Descriptions.Item>
-        <Descriptions.Item label="2">
-          text
-        </Descriptions.Item>
-        <Descriptions.Item label="1"></Descriptions.Item>
-        <Descriptions.Item label="0">text</Descriptions.Item>
-        <Descriptions.Item label="text" span={5}>
-        </Descriptions.Item>
       </Descriptions>}
     </div>
 

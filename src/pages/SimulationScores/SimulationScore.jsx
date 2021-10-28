@@ -24,7 +24,7 @@ const SimulationScore = ({ studyProgramScore, studentScore, study_program_id }) 
 
   return (
     <Descriptions style={{ marginTop: 12 }} column={5} layout="vertical" bordered>
-      <Descriptions.Item span={3} label="RMD" >
+      <Descriptions.Item span={2} label="RMD" >
         {rmdScore.toFixed(3)}
       </Descriptions.Item>
       <Descriptions.Item span={2} label="Skor" >
@@ -42,6 +42,23 @@ const SimulationScore = ({ studyProgramScore, studentScore, study_program_id }) 
                   0
                   :
                   0
+        }
+      </Descriptions.Item>
+      <Descriptions.Item span={1} label="Skor" >
+        {
+          rmdScore >= 10 && rmdScore <= 20 ?
+            "Unggul"
+            :
+            rmdScore < 10 && rmdScore > 0 ?
+              "Baik"
+              :
+              rmdScore > 20 && rmdScore <= 30 ?
+                "Baik Sekali"
+                :
+                rmdScore > 30 ?
+                  "Tidak Terakreditasi"
+                  :
+                  "Tidak Terakreditasi"
         }
       </Descriptions.Item>
       {
